@@ -1,0 +1,35 @@
+{
+    "name": "ifc-color-highlight",
+    "displayName": "ifc-color-highlight",
+    "description": "IFC/Step file format color highlight for VSCode",
+    "version": "0.0.1",
+    "publisher": "AlanRynne",
+    "engines": {
+        "vscode": "^1.36.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "ifc",
+                "aliases": [
+                    "IFC",
+                    "ifc"
+                ],
+                "extensions": [
+                    ".ifc"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ifc",
+                "scopeName": "source.ifc",
+                "path": "./syntaxes/ifc.tmLanguage.json"
+            }
+        ]
+    }
+}

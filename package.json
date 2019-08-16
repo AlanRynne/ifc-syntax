@@ -4,7 +4,7 @@
     "description": "Extension that brings IFC (Industry Foundation Classes) support to VSCode",
     "repository": "https://github.com/AlanRynne/ifc-syntax-highlight.git",
     "icon": "images/IFC-Syntax-Icon.png",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "publisher": "AlanRynne",
     "engines": {
         "vscode": "^1.36.0"

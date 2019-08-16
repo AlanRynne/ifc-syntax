@@ -28,4 +28,3 @@ Currently it supports:
 ## Known Issues
 
 Currently, the entire *HEADER* section of the file will be colored as a comment, this will change in future releases.
-

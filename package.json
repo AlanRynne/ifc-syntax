@@ -1,7 +1,9 @@
 {
-    "name": "ifc-color-highlight",
-    "displayName": "ifc-color-highlight",
-    "description": "IFC/Step file format color highlight for VSCode",
+    "name": "ifc-syntax",
+    "displayName": "IFC Syntax",
+    "description": "Extension that brings IFC (Industry Foundation Classes) support to VSCode",
+    "repository": "https://github.com/AlanRynne/ifc-syntax-highlight.git",
+    "icon": "images/IFC-Syntax-Icon.png",
     "version": "0.0.1",
     "publisher": "AlanRynne",
     "engines": {

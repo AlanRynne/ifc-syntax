@@ -14,7 +14,7 @@
         "Industry Foundation Classes",
         "Building Smart"
     ],
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "AlanRynne",
     "engines": {
         "vscode": "^1.36.0"

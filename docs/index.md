@@ -14,8 +14,8 @@ hero:
     url: vscode:extension/alanrynne.ifc-syntax
     text: "Get it now"
   image:
-    url: assets/images/dashboard.png
-    alt: dashboard
+    url: assets/images/ifcHighlight-Dark-Enabled.png
+    alt: Dark Theme
 
 # Contents section
 contents:

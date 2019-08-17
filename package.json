@@ -25,16 +25,24 @@
         "Programming Languages"
     ],
     "activationEvents": [
-        "onCommand:extension.helloWorld"
+        "onCommand:extension.GetFileInfo"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "extension.helloWorld",
-                "title": "Hello World Alan"
+                "command": "extension.GetFileInfo",
+                "title": "IFC: Get file info"
             }
         ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "extension.GetFileInfo",
+                    "when": "editorLangId == ifc"
+                }
+            ]
+        },
         "languages": [
             {
                 "id": "ifc",

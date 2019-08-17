@@ -11,8 +11,8 @@ hero:
   title: "IFC Syntax"
   subtitle: "Industry Foundation classes language support for VSCode"
   button:
-    url: vscode:extension/alanrynne.ifc-syntax
-    text: "Get it now"
+    url: /blog/
+    text: "See latest releases"
   image:
     url: assets/images/ifcHighlight-Dark-Enabled.png
     alt: Dark Theme

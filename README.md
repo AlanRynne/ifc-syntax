@@ -17,13 +17,13 @@ Currently it supports:
 
 ## Screenshots
 
-![Example of dark theme with no IFC support](images/ifcHighlight-Dark-Disabled.png)
+![Example of dark theme with no IFC support](docs/assets/images/ifcHighlight-Dark-Disabled.png)
 
-![Example of dark theme with IFC Syntax extension](images/ifcHighlight-Dark-Enabled.png)
+![Example of dark theme with IFC Syntax extension](docs/assets/images/ifcHighlight-Dark-Enabled.png)
 
-![Example of dark theme with no IFC support](images/ifcHighlight-Light-Disabled.png)
+![Example of dark theme with no IFC support](docs/assets/images/ifcHighlight-Light-Disabled.png)
 
-![Example of light theme with IFC Syntax extension](images/ifcHighlight-Light-Enabled.png)
+![Example of light theme with IFC Syntax extension](docs/assets/images/ifcHighlight-Light-Enabled.png)
 
 ## Known Issues
 

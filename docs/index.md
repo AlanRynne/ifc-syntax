@@ -37,12 +37,12 @@ contents:
       alt: blue theme
 
 # Testimonial section
-testimonial:
-  quote: ""
-  image: assets/images/
-  author:
-    name: Alan Rynne
-    position: Developer
+# testimonial:
+#   quote: ""
+#   image: assets/images/
+#   author:
+#     name: Alan Rynne
+#     position: Developer
 
 # Callout section
 callout:

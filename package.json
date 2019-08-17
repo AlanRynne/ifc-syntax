@@ -12,7 +12,9 @@
     "keywords": [
         "IFC",
         "Industry Foundation Classes",
-        "Building Smart"
+        "BuildingSmart",
+        "Building Information Modelling",
+        "BIM"
     ],
     "version": "0.0.2",
     "publisher": "AlanRynne",
@@ -33,7 +35,7 @@
                 "extensions": [
                     ".ifc"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./ifc-language-configuration.json"
             }
         ],
         "grammars": [

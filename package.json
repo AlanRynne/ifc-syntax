@@ -26,17 +26,10 @@
     ],
     "activationEvents": [
         "onLanguage:exp",
-        "onLanguage:ifc",
-        "onCommand:extension.GetFileInfo"
+        "onLanguage:ifc"
     ],
     "main": "./out/extension.js",
     "contributes": {
-        "commands": [
-            {
-                "command": "extension.GetFileInfo",
-                "title": "IFC: Get file info"
-            }
-        ],
         "menus": {
             "commandPalette": [
                 {

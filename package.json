@@ -25,6 +25,8 @@
         "Programming Languages"
     ],
     "activationEvents": [
+        "onLanguage:exp",
+        "onLanguage:ifc",
         "onCommand:extension.GetFileInfo"
     ],
     "main": "./out/extension.js",

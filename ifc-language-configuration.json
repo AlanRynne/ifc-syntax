@@ -29,8 +29,8 @@
     ],
     "folding": {
         "markers": {
-            "start": "\\b(HEADER|DATA)\\b",
-            "end": "\\bENDSEC\\b"
+            "start": "^\\b(HEADER|DATA)\\b",
+            "end": "^\\bENDSEC\\b"
         }
     }
 }

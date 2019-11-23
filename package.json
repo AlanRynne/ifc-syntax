@@ -2,7 +2,7 @@
     "name": "ifc-syntax",
     "displayName": "IFC Syntax",
     "description": "Extension that brings IFC (Industry Foundation Classes) support to VSCode",
-    "repository": "https://github.com/AlanRynne/ifc-syntax-highlight.git",
+    "repository": "https://github.com/AlanRynne/ifc-syntax.git",
     "icon": "docs/assets/images/IFC-Syntax-Icon.png",
     "author": {
         "name": "Alan Rynne",
@@ -16,25 +16,20 @@
         "Building Information Modelling",
         "BIM"
     ],
-    "version": "0.0.3",
+    "version": "0.1.2",
     "publisher": "AlanRynne",
     "engines": {
-        "vscode": "^1.36.0"
+        "vscode": "^1.37.0"
     },
     "categories": [
         "Programming Languages"
     ],
     "activationEvents": [
-        "onCommand:extension.GetFileInfo"
+        "onLanguage:exp",
+        "onLanguage:ifc"
     ],
     "main": "./out/extension.js",
     "contributes": {
-        "commands": [
-            {
-                "command": "extension.GetFileInfo",
-                "title": "IFC: Get file info"
-            }
-        ],
         "menus": {
             "commandPalette": [
                 {
@@ -54,6 +49,17 @@
                     ".ifc"
                 ],
                 "configuration": "./ifc-language-configuration.json"
+            },
+            {
+                "id": "exp",
+                "aliases": [
+                    "EXP",
+                    "Express"
+                ],
+                "extensions": [
+                    ".exp"
+                ],
+                "configuration": "./express-language-configuration.json"
             }
         ],
         "grammars": [
@@ -61,6 +67,11 @@
                 "language": "ifc",
                 "scopeName": "source.ifc",
                 "path": "./syntaxes/ifc.tmLanguage.json"
+            },
+            {
+                "language": "exp",
+                "scopeName": "source.express",
+                "path": "./syntaxes/express.tmLanguage.json"
             }
         ]
     },

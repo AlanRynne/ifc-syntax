@@ -1,14 +1,26 @@
 # Change Log
 
-All notable changes to the "ifc-color-highlight" extension will be documented in this file.
+All notable changes to the "ifc-syntax" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+
+## 0.0.4
+
+* Added Express language support
+  * Basic syntax coloring
+  * Basic folding capabilities
+    * Only main entities and sections.
+* Fixed error that prevented extension to load automatically when opening `.ifc` files.
+
+## 0.0.3
+
+* Minor fixes and changes
+
+## 0.0.2
+
+* Minor fixes
 
 ## 0.0.1
 
 * Basic syntas highlight
 * Basic folding capabilities
-
-## [Unreleased]
-
-* 

@@ -1,9 +1,7 @@
 {
     "comments": {
-        // symbol used for single line comment. Remove this entry if your language does not support line comments
-        // "lineComment": "//",
         // symbols used for start and end a block comment. Remove this entry if your language does not support block comments
-        // "blockComment": [ "/*", "*/" ]
+        "blockComment": [ "(*", "*)" ]
     },
     // symbols used as brackets
     "brackets": [
@@ -17,7 +15,7 @@
         ["[", "]"],
         ["(", ")"],
         ["\"", "\""],
-        ["'", "'"]
+        ["'", "'"],
     ],
     // symbols that that can be used to surround a selection
     "surroundingPairs": [
@@ -29,8 +27,10 @@
     ],
     "folding": {
         "markers": {
-            "start": "^\\b(HEADER|DATA)\\b",
-            "end": "^\\bENDSEC\\b"
-        }
+            "start": "^\\b(TYPE|ENTITY|FUNCTION|RULE|SCHEMA)\\b",
+            "end": "^\\b(END_TYPE|END_ENTITY|END_FUNCTION|END_RULE|END_SCHEMA)\\b",
+            
+        },
+        
     }
 }

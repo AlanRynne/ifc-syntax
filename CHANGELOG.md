@@ -4,6 +4,12 @@ All notable changes to the "ifc-syntax" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.1.3
+
+* Fixed Issue #2 - Anoying fake test hover was appeearing.
+
+## Missing some versions here...will update it shortly!
+
 ## 0.1.0
 
 * Added Express language support

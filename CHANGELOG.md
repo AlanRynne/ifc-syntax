@@ -4,7 +4,7 @@ All notable changes to the "ifc-syntax" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 0.0.4
+## 0.1.0
 
 * Added Express language support
   * Basic syntax coloring

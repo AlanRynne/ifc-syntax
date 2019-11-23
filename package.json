@@ -30,14 +30,6 @@
     ],
     "main": "./out/extension.js",
     "contributes": {
-        "menus": {
-            "commandPalette": [
-                {
-                    "command": "extension.GetFileInfo",
-                    "when": "editorLangId == ifc"
-                }
-            ]
-        },
         "languages": [
             {
                 "id": "ifc",

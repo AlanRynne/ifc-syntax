@@ -4,7 +4,7 @@ All notable changes to the "ifc-syntax" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 0.1.3
+## 0.1.2.1
 
 * Fixed Issue #2 - Anoying fake test hover was appeearing.
 

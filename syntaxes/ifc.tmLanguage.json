@@ -87,17 +87,67 @@
       ]
     },
     "header": {
-      "name": "comment.block.ifc",
-      "begin": "HEADER",
-      "end": "ENDSEC;"
+      "name": "entity.name.ifc",
+      "begin": "HEADER;",
+      "beginCaptures": {
+        "0": {
+          "name": "entity.name.section.ifc"
+        }
+      },
+      "end": "ENDSEC;",
+      "endCaptures": {
+        "0": {
+          "name": "entity.name.section.ifc"
+        }
+      },
+      "patterns": [
+        {
+          "name": "entity.name.ifc",
+          "begin": "FILE_\\w+",
+          "beginCaptures": {
+            "0": {
+              "name": "entity.name.tag"
+            }
+          },
+          "end": ";",
+          "patterns": [
+            {
+              "include": "#snglQuoteString"
+            }
+          ]
+        },
+        {
+          "name": "entity.name.ifc",
+          "begin": "\\/\\*+",
+          "beginCaptures": {
+            "0": {
+              "name": "comment.block.ifc"
+            }
+          },
+          "end": "\\*+\\/",
+          "endCaptures": {
+            "0": {
+              "name": "comment.block.ifc"
+            }
+          },
+          "patterns": [
+            {
+              "name": "comment.line.ifc",
+              "begin": "\\*",
+              "beginCaptures": {
+                "0": { "name": "keyword.other.ifc" }
+              },
+              "end": ":"
+            }
+          ]
+        }
+      ]
     },
-    
     "comment": {
       "name": "comment.block.ifc",
       "begin": "\\/\\*",
       "end": "\\*\\/"
     },
-
     "ifcRef": {
       "name": "entity.name.function.ifc",
       "match": "\\#\\d+"

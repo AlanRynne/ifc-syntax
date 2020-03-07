@@ -4,9 +4,14 @@ All notable changes to the "ifc-syntax" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+
+## 0.1.4
+
+* Fixed Issue #6 - Missing comments style in Data section
+
 ## 0.1.3
 
-* Fixed Issue #2 - Anoying fake test hover was appeearing.
+* Fixed Issue #2 - Anoying fake test hover was appearing.
 
 ## Missing some versions here...will update it shortly!
 

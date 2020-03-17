@@ -45,7 +45,6 @@ connection.onInitialize((params: InitializeParams) => {
         capabilities.textDocument.publishDiagnostics &&
         capabilities.textDocument.publishDiagnostics.relatedInformation
     );
-
     return {
         capabilities: {
             textDocumentSync: documents.syncKind,
@@ -93,7 +92,7 @@ connection.onDidChangeConfiguration(change => {
         );
     }
 
-    // Revalidate all open text documents
+    // Revalidate all open ifc documents
     documents.all().forEach(validateTextDocument);
 });
 
@@ -129,7 +128,6 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
     // The validator creates diagnostics for all uppercase words length 2 and more
     let text = textDocument.getText();
-    console.log("TEXT", text);
     let pattern = /\b[A-Z]{2,}\b/g;
     let m: RegExpExecArray | null;
 
@@ -211,6 +209,7 @@ connection.onCompletionResolve(
         return item;
     }
 );
+
 
 /*
 connection.onDidOpenTextDocument((params) => {

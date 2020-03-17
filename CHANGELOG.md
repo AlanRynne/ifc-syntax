@@ -4,6 +4,10 @@ All notable changes to the "ifc-syntax" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## Unreleased
+
+- Added new barebones Language Server with some test implementations
+- Reorganized into folders according to the Go language server structure
 
 ## 0.1.4
 

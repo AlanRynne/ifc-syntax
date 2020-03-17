@@ -3,7 +3,7 @@
     "displayName": "IFC Syntax",
     "description": "Extension that brings IFC (Industry Foundation Classes) support to VSCode",
     "repository": "https://github.com/AlanRynne/ifc-syntax.git",
-    "icon": "docs/assets/images/IFC-Syntax-Icon.png",
+    "icon": "https://github.com/AlanRynne/docs/assets/images/IFC-Syntax-Icon.png",
     "author": {
         "name": "Alan Rynne",
         "email": "alan@rynne.es",
@@ -26,10 +26,56 @@
     ],
     "activationEvents": [
         "onLanguage:exp",
-        "onLanguage:ifc"
+        "onLanguage:ifc",
+        "onCommand:ifcSyntax.sayHello"
     ],
     "main": "./client/out/extension.js",
     "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "ifc-explorer",
+                    "title": "IFC Explorer",
+                    "icon": "./assets/building-black.svg"
+                }
+            ]
+        },
+        "views": {
+            "ifc-explorer": [
+                {
+                    "id": "ifcStructure",
+                    "name": "Entity Tree"
+                },
+                {
+                    "id": "ifcPSets",
+                    "name": "Property Sets"
+                },
+                {
+                    "id": "ifcHeader",
+                    "name": "Header Data"
+                }
+            ]
+        },
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "ifcSyntax.openViewer",
+                    "group": "navigation",
+                    "when": "editorLangId == ifc"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "ifcSyntax.openViewer",
+                "when": "editorLangId == ifc",
+                "title": "IFC: Open in Viewer",
+                "icon": {
+                    "light": "./assets/building-black.svg",
+                    "dark": "./assets/building-white.svg"
+                }
+            }
+        ],
         "configuration": {
             "type": "object",
             "title": "IFC Syntax",
@@ -63,7 +109,7 @@
                 "extensions": [
                     ".ifc"
                 ],
-                "configuration": "./ifc-language-configuration.json"
+                "configuration": "./languages/ifc-language-configuration.json"
             },
             {
                 "id": "exp",
@@ -74,7 +120,7 @@
                 "extensions": [
                     ".exp"
                 ],
-                "configuration": "./express-language-configuration.json"
+                "configuration": "./languages/express-language-configuration.json"
             }
         ],
         "grammars": [

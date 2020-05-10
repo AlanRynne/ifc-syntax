@@ -12,7 +12,8 @@ import {
     ServerOptions,
     TransportKind
 } from 'vscode-languageclient';
-import { DepNodeProvider } from './nodeDependencies';
+import { IfcHeadInfoProvider } from './ifcHeadTreeProvider';
+// import { DepNodeProvider } from './nodeDependencies';
 
 let client: LanguageClient;
 
@@ -29,8 +30,8 @@ let client: LanguageClient;
 export function activate(context: vscode.ExtensionContext) {
     console.log('IFC-Syntax has been activated.');
 
-    // const nodeDependenciesProvider = new DepNodeProvider(vscode.workspace.rootPath);
-    // vscode.window.registerTreeDataProvider('nodeDependencies', nodeDependenciesProvider);
+    const ifcHeaderProvider = new IfcHeadInfoProvider();
+    vscode.window.registerTreeDataProvider('ifcHeader', ifcHeaderProvider);
 
     registerCommands(context);
 
@@ -48,7 +49,10 @@ export function activate(context: vscode.ExtensionContext) {
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
     let serverOptions: ServerOptions = {
-        run: { module: serverModule, transport: TransportKind.ipc },
+        run: {
+            module: serverModule,
+            transport: TransportKind.ipc
+        },
         debug: {
             module: serverModule,
             transport: TransportKind.ipc,
@@ -61,9 +65,9 @@ export function activate(context: vscode.ExtensionContext) {
         // Register the server for ifc text documents
         documentSelector: [{ scheme: 'file', language: 'ifc' }],
         synchronize: {
-            // Notify the server about file changes to '.clientrc files contained in the workspace
-            fileEvents: vscode.workspace.createFileSystemWatcher('**/*.ifc')
-        },
+            // Notify the server about file changes to '*.ifcconfig' files contained in the workspace
+            fileEvents: vscode.workspace.createFileSystemWatcher('**/*.ifcconfig'),
+        }
     };
 
     // Create the language client and start the client.

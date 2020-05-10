@@ -27,7 +27,9 @@
     "activationEvents": [
         "onLanguage:exp",
         "onLanguage:ifc",
-        "onCommand:ifcSyntax.sayHello"
+        "onCommand:ifcSyntax.sayHello",
+        "workspaceContains:**/.ifcconfig",
+        "workspaceContains:**/*.ifc"
     ],
     "main": "./client/out/extension.js",
     "contributes": {
@@ -70,10 +72,7 @@
                 "command": "ifcSyntax.openViewer",
                 "when": "editorLangId == ifc",
                 "title": "IFC: Open in Viewer",
-                "icon": {
-                    "light": "./assets/building-black.svg",
-                    "dark": "./assets/building-white.svg"
-                }
+                "icon": "$(symbol-field)"
             }
         ],
         "configuration": {
@@ -112,15 +111,14 @@
                 "configuration": "./languages/ifc-language-configuration.json"
             },
             {
-                "id": "exp",
+                "id": "json",
                 "aliases": [
-                    "EXP",
-                    "Express"
+                    "cIFC",
+                    "IFC Config"
                 ],
                 "extensions": [
-                    ".exp"
-                ],
-                "configuration": "./languages/express-language-configuration.json"
+                    ".ifcconfig"
+                ]
             }
         ],
         "grammars": [
@@ -152,6 +150,5 @@
         "tslint": "^5.12.1",
         "typescript": "^3.3.1",
         "vscode-test": "^1.0.0-next.0"
-    },
-    "dependencies": {}
+    }
 }

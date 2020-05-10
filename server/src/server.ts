@@ -13,6 +13,7 @@ import {
     CancellationToken
 } from 'vscode-languageserver';
 import { validateTextDocument } from './validateTextDocument';
+import { Ifc2Ast } from "ifc2ast";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.

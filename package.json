@@ -150,5 +150,8 @@
         "tslint": "^5.12.1",
         "typescript": "^3.3.1",
         "vscode-test": "^1.0.0-next.0"
+    },
+    "dependencies": {
+        "ifc2ast": "file:../../Desktop/Projects/Ifc2AstParser"
     }
 }

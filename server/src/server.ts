@@ -21,7 +21,7 @@ import {
 import { validateTextDocument } from './validateTextDocument';
 import { Ifc2Ast, DefinitionVisitor, PositionVisitor } from "ifc2ast";
 
-import { DocumentNode } from 'ifc2ast/out/ast/nodes';
+import { DocumentNode, AssignmentNode, VariableNode, ConstructorNode } from 'ifc2ast/out/ast/nodes';
 import { IfcSyntaxSettings, DefaultSettings } from './IfcSyntaxSettings';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -49,15 +49,37 @@ connection.onDefinition((params: TextDocumentPositionParams) => {
     });
 });
 
-connection.onDocumentSymbol((params: DocumentSymbolParams) => {
-    let symbol = DocumentSymbol.create('A symbol', 'A symbol detail', SymbolKind.Variable, {
-        start: { line: 2, character: 5 },
-        end: { line: 2, character: 9 }
-    }, {
-        start: { line: 2, character: 5 },
-        end: { line: 2, character: 6 }
-    });
-    return [symbol];
+connection.onDocumentSymbol(async (params: DocumentSymbolParams) => {
+    let doc = documents.get(params.textDocument.uri);
+    let text = doc ? doc.getText() : null;
+    if (text) {
+        // Parse file
+        let d = await new Ifc2Ast().parseIfcFile(text.split('\n'), true).then(doc => {
+            // Visit document
+            let pv = new DefinitionVisitor().visit(doc);
+            if (pv !== undefined || pv !== null) {
+                let nodes = pv as AssignmentNode[];
+                // Create document symbols
+                return nodes.map(node => {
+                    let name = '#' + (node.name as VariableNode).id;
+                    let constructor = node.value as ConstructorNode;
+                    return DocumentSymbol.create(
+                        name,
+                        "this is a description",
+                        SymbolKind.Variable,
+                        {
+                            start: { line: node.name.loc.start.line - 1, character: node.name.loc.start.character },
+                            end: { line: node.name.loc.end.line - 1, character: node.name.loc.end.character }
+                        },
+                        {
+                            start: { line: node.name.loc.start.line - 1, character: node.name.loc.start.character },
+                            end: { line: node.name.loc.end.line - 1, character: node.name.loc.end.character }
+                        });
+                });
+            }
+        });
+        return d;
+    }
 });
 
 connection.onInitialize((params: InitializeParams) => {

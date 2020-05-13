@@ -25,7 +25,6 @@
         "Programming Languages"
     ],
     "activationEvents": [
-        "onLanguage:exp",
         "onLanguage:ifc",
         "onCommand:ifcSyntax.sayHello",
         "workspaceContains:**/.ifcconfig",
@@ -126,11 +125,6 @@
                 "language": "ifc",
                 "scopeName": "source.ifc",
                 "path": "./syntaxes/ifc.tmLanguage.json"
-            },
-            {
-                "language": "exp",
-                "scopeName": "source.express",
-                "path": "./syntaxes/express.tmLanguage.json"
             }
         ]
     },

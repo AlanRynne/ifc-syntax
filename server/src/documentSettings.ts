@@ -1,4 +1,5 @@
-import { IfcSyntaxSettings, hasConfigurationCapability, globalSettings, documentSettings, connection } from './server';
+import { hasConfigurationCapability, globalSettings, documentSettings, connection } from './server';
+import { IfcSyntaxSettings } from "./IfcSyntaxSettings";
 export function getDocumentSettings(resource: string): Thenable<IfcSyntaxSettings> {
     if (!hasConfigurationCapability) {
         return Promise.resolve(globalSettings);

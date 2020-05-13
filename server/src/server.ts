@@ -10,22 +10,55 @@ import {
     InitializeParams,
     DidChangeConfigurationNotification,
     TextDocument,
-    CancellationToken
+    CancellationToken,
+    Definition,
+    Location,
+    TextDocumentPositionParams,
+    DocumentSymbolParams,
+    DocumentSymbol,
+    SymbolKind
 } from 'vscode-languageserver';
 import { validateTextDocument } from './validateTextDocument';
-import { Ifc2Ast } from "ifc2ast";
+import { Ifc2Ast, DefinitionVisitor, PositionVisitor } from "ifc2ast";
+
+import { DocumentNode } from 'ifc2ast/out/ast/nodes';
+import { IfcSyntaxSettings, DefaultSettings } from './IfcSyntaxSettings';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 export let connection = createConnection(ProposedFeatures.all);
+import './hoverHandler';
+import './completionHandler';
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
 export let documents: TextDocuments = new TextDocuments();
 
+// Create a map to hold the AST `DocumentNode`s of each file
+export let documentsAST: Map<string, DocumentNode> = new Map<string, DocumentNode>();
+
+// Setup configuration flags
 export let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 export let hasDiagnosticRelatedInformationCapability: boolean = false;
+
+connection.onDefinition((params: TextDocumentPositionParams) => {
+    return Location.create(params.textDocument.uri, {
+        start: { line: 2, character: 5 },
+        end: { line: 2, character: 6 }
+    });
+});
+
+connection.onDocumentSymbol((params: DocumentSymbolParams) => {
+    let symbol = DocumentSymbol.create('A symbol', 'A symbol detail', SymbolKind.Variable, {
+        start: { line: 2, character: 5 },
+        end: { line: 2, character: 9 }
+    }, {
+        start: { line: 2, character: 5 },
+        end: { line: 2, character: 6 }
+    });
+    return [symbol];
+});
 
 connection.onInitialize((params: InitializeParams) => {
     let capabilities = params.capabilities;
@@ -56,7 +89,9 @@ connection.onInitialize((params: InitializeParams) => {
             completionProvider: {
                 resolveProvider: true,
             },
-            hoverProvider: true
+            hoverProvider: true,
+            definitionProvider: true,
+            documentSymbolProvider: true
         }
     };
 });
@@ -74,26 +109,10 @@ connection.onInitialized(() => {
 
 });
 
-// The example settings
-export interface IfcSyntaxSettings {
-    maxNumberOfProblems: number;
-}
-
-// The global settings, used when the `workspace/configuration` request is not supported by the client.
-// Please note that this is not the case when using this server with the client provided in this example
-// but could happen with other clients.
-const defaultSettings: IfcSyntaxSettings = {
-    maxNumberOfProblems: 1000
-};
-
-
-export let globalSettings: IfcSyntaxSettings = defaultSettings;
+export let globalSettings: IfcSyntaxSettings = DefaultSettings;
 
 // Cache the settings of all open documents
 export let documentSettings: Map<string, Thenable<IfcSyntaxSettings>> = new Map();
-
-import './hoverHandler';
-import './completionHandler';
 
 connection.onDidChangeConfiguration(change => {
 
@@ -102,7 +121,7 @@ connection.onDidChangeConfiguration(change => {
         documentSettings.clear();
     } else {
         globalSettings = <IfcSyntaxSettings>(
-            (change.settings.ifcSyntax || defaultSettings)
+            (change.settings.ifcSyntax || DefaultSettings)
         );
     }
     // Revalidate all open ifc documents

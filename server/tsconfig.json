@@ -4,7 +4,7 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "sourceMap": true,
-        "strict": true,
+        "strict": false,
         "outDir": "out",
         "rootDir": "src"
     },

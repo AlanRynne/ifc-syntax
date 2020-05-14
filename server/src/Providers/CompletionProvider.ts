@@ -1,8 +1,8 @@
 import { CompletionItem, CompletionItemKind, TextDocumentPositionParams } from 'vscode-languageserver';
-import { connection } from './server';
 
 // This handler provides the initial list of the completion items.
-connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+// HACK: This is still the demo provider code!!!
+export const processCompletion = (_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
     // The pass parameter contains the position of the text document in
     // which code complete got requested. For the example we ignore this
     // info and always provide the same completion items.
@@ -18,10 +18,10 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
             data: 2
         }
     ];
-});
+};
 
 // This handler resolves additional information for the item selected in the completion list.
-connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
+export const resolveCompletion = (item: CompletionItem): CompletionItem => {
     if (item.data === 1) {
         item.detail = 'TypeScript details';
         item.documentation = 'TypeScript documentation';
@@ -31,4 +31,4 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
         item.documentation = 'JavaScript documentation';
     }
     return item;
-});
+};

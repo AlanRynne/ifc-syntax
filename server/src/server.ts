@@ -9,79 +9,46 @@ import {
     ProposedFeatures,
     InitializeParams,
     DidChangeConfigurationNotification,
-    TextDocument,
-    CancellationToken,
-    Definition,
-    Location,
-    TextDocumentPositionParams,
-    DocumentSymbolParams,
-    DocumentSymbol,
-    SymbolKind
 } from 'vscode-languageserver';
-import { validateTextDocument } from './validateTextDocument';
-import { Ifc2Ast, DefinitionVisitor, PositionVisitor } from "ifc2ast";
+import { IfcSyntaxSettings, DefaultSettings } from './settings';
+import { validateTextDocument } from './Providers/ValidationProvider';
 
-import { DocumentNode, AssignmentNode, VariableNode, ConstructorNode } from 'ifc2ast/out/ast/nodes';
-import { IfcSyntaxSettings, DefaultSettings } from './IfcSyntaxSettings';
+
+import { processDocumentSymbols } from './Providers/SymbolProvider';
+import { processHoverData } from './Providers/HoverProvider';
+import { processCompletion, resolveCompletion } from './Providers/CompletionProvider';
+import { processGoToDefinition } from './Providers/GoToDefinitionProvider';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 export let connection = createConnection(ProposedFeatures.all);
-import './hoverHandler';
-import './completionHandler';
 
-// Create a simple text document manager. The text document manager
-// supports full document sync only
+// Create a simple text document manager. The text document manager supports full document sync only
 export let documents: TextDocuments = new TextDocuments();
-
-// Create a map to hold the AST `DocumentNode`s of each file
-export let documentsAST: Map<string, DocumentNode> = new Map<string, DocumentNode>();
-
 // Setup configuration flags
 export let hasConfigurationCapability: boolean = false;
-let hasWorkspaceFolderCapability: boolean = false;
+export let hasWorkspaceFolderCapability: boolean = false;
 export let hasDiagnosticRelatedInformationCapability: boolean = false;
 
-connection.onDefinition((params: TextDocumentPositionParams) => {
-    return Location.create(params.textDocument.uri, {
-        start: { line: 2, character: 5 },
-        end: { line: 2, character: 6 }
-    });
-});
+// Server settings
+export let globalSettings: IfcSyntaxSettings = DefaultSettings;
+// Cache the settings of all open documents
+export let documentSettings: Map<string, Thenable<IfcSyntaxSettings>> = new Map();
 
-connection.onDocumentSymbol(async (params: DocumentSymbolParams) => {
-    let doc = documents.get(params.textDocument.uri);
-    let text = doc ? doc.getText() : null;
-    if (text) {
-        // Parse file
-        let d = await new Ifc2Ast().parseIfcFile(text.split('\n'), true).then(doc => {
-            // Visit document
-            let pv = new DefinitionVisitor().visit(doc);
-            if (pv !== undefined || pv !== null) {
-                let nodes = pv as AssignmentNode[];
-                // Create document symbols
-                return nodes.map(node => {
-                    let name = '#' + (node.name as VariableNode).id;
-                    let constructor = node.value as ConstructorNode;
-                    return DocumentSymbol.create(
-                        name,
-                        "this is a description",
-                        SymbolKind.Variable,
-                        {
-                            start: { line: node.name.loc.start.line - 1, character: node.name.loc.start.character },
-                            end: { line: node.name.loc.end.line - 1, character: node.name.loc.end.character }
-                        },
-                        {
-                            start: { line: node.name.loc.start.line - 1, character: node.name.loc.start.character },
-                            end: { line: node.name.loc.end.line - 1, character: node.name.loc.end.character }
-                        });
-                });
-            }
-        });
-        return d;
-    }
-});
+//#region Event handlers
 
+connection.onDefinition(processGoToDefinition);
+
+// Document symbols handler
+connection.onDocumentSymbol(processDocumentSymbols);
+// Hover information handler
+connection.onHover(processHoverData);
+// Code completion handlers
+connection.onCompletion(processCompletion);
+connection.onCompletionResolve(resolveCompletion);
+
+
+// Server initialization handlers
 connection.onInitialize((params: InitializeParams) => {
     let capabilities = params.capabilities;
 
@@ -117,7 +84,6 @@ connection.onInitialize((params: InitializeParams) => {
         }
     };
 });
-
 connection.onInitialized(() => {
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
@@ -131,11 +97,7 @@ connection.onInitialized(() => {
 
 });
 
-export let globalSettings: IfcSyntaxSettings = DefaultSettings;
-
-// Cache the settings of all open documents
-export let documentSettings: Map<string, Thenable<IfcSyntaxSettings>> = new Map();
-
+// Configuration change handler
 connection.onDidChangeConfiguration(change => {
 
     if (hasConfigurationCapability) {
@@ -150,6 +112,8 @@ connection.onDidChangeConfiguration(change => {
     documents.all().forEach(validateTextDocument);
 });
 
+// TODO: Must implement this yet.
+// File watcher for config files
 connection.onDidChangeWatchedFiles(_change => {
     // Monitored files have change in VSCode
     connection.console.log(`We received an file change event ${_change.changes[0].uri}`);
@@ -160,16 +124,15 @@ documents.onDidClose(e => {
     documentSettings.delete(e.document.uri);
 });
 
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
+// The content of a text document has changed. This event is emitted when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
     connection.console.log('file content was changed');
     validateTextDocument(change.document);
 });
+//#endregion
 
-// Make the text document manager listen on the connection
-// for open, change and close text document events
+
+// Make the text document manager listen on the connection for open, change and close text document events
 documents.listen(connection);
-
 // Listen on the connection
 connection.listen();

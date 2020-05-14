@@ -1,6 +1,6 @@
 import { TextDocument, Diagnostic, DiagnosticSeverity } from 'vscode-languageserver';
-import { hasDiagnosticRelatedInformationCapability, connection } from './server';
-import { getDocumentSettings } from "./documentSettings";
+import { hasDiagnosticRelatedInformationCapability, connection } from '../server';
+import { getDocumentSettings } from "../settings";
 
 export async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     // In this simple example we get the settings for every validate run.

@@ -37,8 +37,8 @@ export let documentSettings: Map<string, Thenable<IfcSyntaxSettings>> = new Map(
 
 //#region Event handlers
 
+// Go to definition provider
 connection.onDefinition(processGoToDefinition);
-
 // Document symbols handler
 connection.onDocumentSymbol(processDocumentSymbols);
 // Hover information handler
@@ -46,7 +46,6 @@ connection.onHover(processHoverData);
 // Code completion handlers
 connection.onCompletion(processCompletion);
 connection.onCompletionResolve(resolveCompletion);
-
 
 // Server initialization handlers
 connection.onInitialize((params: InitializeParams) => {
@@ -112,7 +111,7 @@ connection.onDidChangeConfiguration(change => {
     documents.all().forEach(validateTextDocument);
 });
 
-// TODO: Must implement this yet.
+// TODO: Must implement .ifcconfig yet.
 // File watcher for config files
 connection.onDidChangeWatchedFiles(_change => {
     // Monitored files have change in VSCode

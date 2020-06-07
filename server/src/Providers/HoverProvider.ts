@@ -2,11 +2,11 @@ import { TextDocumentPositionParams, Hover } from 'vscode-languageserver';
 import { connection, documents } from '../server';
 import { Ifc2Ast, PositionVisitor } from "ifc2ast";
 import { ASTPosition } from 'ifc2ast/out/ast/core/ASTPosition';
-import { AssignmentNode, ConstructorNode } from 'ifc2ast/out/ast/nodes';
+import { AssignmentNode, ConstructorNode, VariableNode } from 'ifc2ast/out/ast/nodes';
+import { ASTType } from 'ifc2ast/out/ast';
+import { ASTDefinitionFinderVisitor } from 'ifc2ast/out/ast/visitor/ASTVisitor';
 
 export const processHoverData = async (params: TextDocumentPositionParams) => {
-    connection.console.log(`Client asked for hover on ${params.position.line}:${params.position.character}`);
-
     let doc = documents.get(params.textDocument.uri);
     let text = doc ? doc.getText() : null;
     if (text) {
@@ -14,15 +14,14 @@ export const processHoverData = async (params: TextDocumentPositionParams) => {
 
             let p = new ASTPosition(params.position.line + 1, params.position.character);
 
-            let pv: AssignmentNode = new PositionVisitor().visit(doc, p);
+            let pv: any = new PositionVisitor().visit(doc, p);
             if (pv === undefined || pv === null) {
                 return null;
             }
-
-            let val = pv.value as ConstructorNode; // Value in an IFC assigment will always be a constructor node.
-            if (val === undefined || val === null) {
-                return null;
-            }
+            // let val = pv.value as ConstructorNode; // Value in an IFC assigment will always be a constructor node.
+            // if (val === undefined || val === null) {
+            //     return null;
+            // }
 
             let lineRange = {
                 start: {
@@ -36,7 +35,7 @@ export const processHoverData = async (params: TextDocumentPositionParams) => {
             };
 
             let h = {
-                contents: val.name,
+                contents: JSON.stringify(pv.loc),
                 range: lineRange
             };
             return h;

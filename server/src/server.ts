@@ -9,6 +9,9 @@ import {
     ProposedFeatures,
     InitializeParams,
     DidChangeConfigurationNotification,
+    TextDocumentPositionParams,
+    DocumentHighlight,
+    Range
 } from 'vscode-languageserver';
 import { IfcSyntaxSettings, DefaultSettings } from './settings';
 import { validateTextDocument } from './Providers/ValidationProvider';
@@ -44,8 +47,9 @@ connection.onDocumentSymbol(processDocumentSymbols);
 // Hover information handler
 connection.onHover(processHoverData);
 // Code completion handlers
-connection.onCompletion(processCompletion);
-connection.onCompletionResolve(resolveCompletion);
+//connection.onCompletion(processCompletion);
+//connection.onCompletionResolve(resolveCompletion);
+
 
 // Server initialization handlers
 connection.onInitialize((params: InitializeParams) => {
@@ -74,12 +78,12 @@ connection.onInitialize((params: InitializeParams) => {
             },
             textDocumentSync: documents.syncKind,
             // Tell the client that the server supports code completion
-            completionProvider: {
-                resolveProvider: true,
-            },
+            // completionProvider: {
+            //     resolveProvider: true,
+            // },
             hoverProvider: true,
             definitionProvider: true,
-            documentSymbolProvider: true
+            documentSymbolProvider: true,
         }
     };
 });
@@ -126,7 +130,7 @@ documents.onDidClose(e => {
 // The content of a text document has changed. This event is emitted when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
     connection.console.log('file content was changed');
-    validateTextDocument(change.document);
+    //validateTextDocument(change.document);
 });
 //#endregion
 

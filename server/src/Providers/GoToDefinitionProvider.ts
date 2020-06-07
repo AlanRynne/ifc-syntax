@@ -1,11 +1,11 @@
 import { Location, TextDocumentPositionParams } from 'vscode-languageserver';
 import { documents } from '../server';
-import { Ifc2Ast, PositionVisitor } from 'ifc2ast';
-import { IVisitor } from 'ifc2ast/out/ast/visitor/IVisitor';
-import { ASTNode } from 'ifc2ast/out/ast';
-import { ASTPosition } from 'ifc2ast/out/ast/core/ASTPosition';
-import * as nodes from 'ifc2ast/out/ast/nodes';
-import { ASTDefinitionFinderVisitor } from 'ifc2ast/out/ast/visitor/ASTVisitor';
+import { Ifc2Ast, PositionVisitor } from '@alanrynne/ifc-syntax-ast-parser';
+import { IVisitor } from '@alanrynne/ifc-syntax-ast-parser/out/ast/visitor/IVisitor';
+import { ASTNode } from '@alanrynne/ifc-syntax-ast-parser/out/ast';
+import { ASTPosition } from '@alanrynne/ifc-syntax-ast-parser/out/ast/core/ASTPosition';
+import * as nodes from '@alanrynne/ifc-syntax-ast-parser/out/ast/nodes';
+import { ASTDefinitionFinderVisitor } from '@alanrynne/ifc-syntax-ast-parser/out/ast/visitor/ASTVisitor';
 
 // TODO: Create IVisitor provider and hook it up.
 export const processGoToDefinition = async (params: TextDocumentPositionParams) => {

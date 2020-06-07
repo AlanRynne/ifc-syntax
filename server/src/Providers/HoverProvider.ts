@@ -1,10 +1,10 @@
 import { TextDocumentPositionParams, Hover } from 'vscode-languageserver';
 import { connection, documents } from '../server';
-import { Ifc2Ast, PositionVisitor } from "ifc2ast";
-import { ASTPosition } from 'ifc2ast/out/ast/core/ASTPosition';
-import { AssignmentNode, ConstructorNode, VariableNode } from 'ifc2ast/out/ast/nodes';
-import { ASTType } from 'ifc2ast/out/ast';
-import { ASTDefinitionFinderVisitor } from 'ifc2ast/out/ast/visitor/ASTVisitor';
+import { Ifc2Ast, PositionVisitor } from "@alanrynne/ifc-syntax-ast-parser";
+import { ASTPosition } from '@alanrynne/ifc-syntax-ast-parser/out/ast/core/ASTPosition';
+import { AssignmentNode, ConstructorNode, VariableNode } from '@alanrynne/ifc-syntax-ast-parser/out/ast/nodes';
+import { ASTType } from '@alanrynne/ifc-syntax-ast-parser/out/ast';
+import { ASTDefinitionFinderVisitor } from '@alanrynne/ifc-syntax-ast-parser/out/ast/visitor/ASTVisitor';
 
 export const processHoverData = async (params: TextDocumentPositionParams) => {
     let doc = documents.get(params.textDocument.uri);

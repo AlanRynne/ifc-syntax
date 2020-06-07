@@ -1,9 +1,9 @@
 import { DocumentSymbol, SymbolKind, DocumentSymbolParams } from 'vscode-languageserver';
-import { DocumentNode, AssignmentNode, VariableNode, ConstructorNode, SectionNode, FunctionNode } from 'ifc2ast/out/ast/nodes';
-import { IVisitor } from 'ifc2ast/out/ast/visitor/IVisitor';
-import { ASTNode, ASTRange } from 'ifc2ast/out/ast';
+import { DocumentNode, AssignmentNode, VariableNode, ConstructorNode, SectionNode, FunctionNode, StringNode } from '@alanrynne/ifc-syntax-ast-parser/out/ast/nodes';
+import { IVisitor } from '@alanrynne/ifc-syntax-ast-parser/out/ast/visitor/IVisitor';
+import { ASTNode, ASTRange } from '@alanrynne/ifc-syntax-ast-parser/out/ast';
 import { documents } from '../server';
-import { Ifc2Ast } from 'ifc2ast';
+import { Ifc2Ast } from '@alanrynne/ifc-syntax-ast-parser';
 
 export const processDocumentSymbols = async (params: DocumentSymbolParams) => {
     let doc = documents.get(params.textDocument.uri);
@@ -24,7 +24,7 @@ class SymbolProvider implements IVisitor {
         if (node instanceof AssignmentNode) {
             let name = node.name as VariableNode;
             let constructor = node.value as ConstructorNode;
-            return DocumentSymbol.create(`#${name.id}`, constructor.name, SymbolKind.Field, this.convertRange(node.loc), this.convertRange(node.name.loc));
+            return DocumentSymbol.create(`#${name.id}`, (constructor.name as StringNode).text, SymbolKind.Field, this.convertRange(node.loc), this.convertRange(node.name.loc));
         }
         else if (node instanceof FunctionNode) {
             let name: any = node.name;

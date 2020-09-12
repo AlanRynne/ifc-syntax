@@ -136,16 +136,17 @@
         "test": "sh ./scripts/e2e.sh"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.1",
+        "@types/glob": "^7.1.3",
         "@types/mocha": "^5.2.6",
-        "@types/node": "^10.12.21",
-        "glob": "^7.1.4",
-        "mocha": "^6.1.4",
-        "tslint": "^5.12.1",
-        "typescript": "^3.3.1",
-        "vscode-test": "^1.0.0-next.0"
+        "@types/node": "^10.17.32",
+        "glob": "^7.1.6",
+        "mocha": "^6.2.3",
+        "tslint": "^5.20.1",
+        "typescript": "^3.9.7",
+        "vscode-test": "^1.4.0"
     },
     "dependencies": {
-        "@alanrynne/ifc-syntax-ast-parser": "file:../ifc-syntax-ast-parser"
+        "@alanrynne/ifc-syntax-ast-parser": "file:../ifc-syntax-ast-parser",
+        "@alanrynne/ifc-syntax-express-parser": "file:../ifc-syntax-express-parser"
     }
 }

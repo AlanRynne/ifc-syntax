@@ -8,22 +8,19 @@ import {
   TextDocuments,
   ProposedFeatures,
   InitializeParams,
-  DidChangeConfigurationNotification,
-  TextDocumentPositionParams,
-  DocumentHighlight,
-  Range
+  DidChangeConfigurationNotification
 } from "vscode-languageserver"
-import { IfcSyntaxSettings, DefaultSettings } from "./settings"
-import { validateTextDocument } from "./Providers/ValidationProvider"
 
+import { IfcSyntaxSettings, DefaultSettings } from "./settings"
+
+import { validateTextDocument } from "./Providers/ValidationProvider"
 import { processDocumentSymbols } from "./Providers/SymbolProvider"
 import { processHoverData } from "./Providers/HoverProvider"
-import {
-  processCompletion,
-  resolveCompletion
-} from "./Providers/CompletionProvider"
 import { processGoToDefinition } from "./Providers/GoToDefinitionProvider"
+
 import IfcDocumentManager from "./IfcDocumentManager"
+import { findEntityInSchema } from "./Providers/IfcUtilities"
+import IfcSchemas from "./schemas"
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -105,8 +102,10 @@ connection.onInitialized(() => {
       connection.console.log("Workspace folder change event received.")
     })
   }
+  connection.onRequest("ifc-syntax.docs", payload => {
+    return findEntityInSchema(IfcSchemas[payload.version], payload.name)
+  })
 })
-
 // Configuration change handler
 connection.onDidChangeConfiguration(change => {
   if (hasConfigurationCapability) {
@@ -124,11 +123,11 @@ connection.onDidChangeConfiguration(change => {
 // TODO: Must implement .ifcconfig.
 // File watcher for config files
 connection.onDidChangeWatchedFiles(_change => {
+  const uri = _change.changes[0].uri
   // Monitored files have change in VSCode
-  connection.console.log(
-    `We received an file change event ${_change.changes[0].uri}`
-  )
+  connection.console.log(`We received an file change event ${uri}`)
 })
+
 export const IfcDocManager = new IfcDocumentManager()
 
 // Only keep settings for open documents

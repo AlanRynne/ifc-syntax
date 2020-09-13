@@ -1,12 +1,13 @@
 import { TextDocumentPositionParams, Hover } from "vscode-languageserver"
-import { documents, IfcDocManager } from "../server"
+import { documents, IfcDocManager, connection } from "../server"
 import { PositionVisitor } from "@alanrynne/ifc-syntax-ast-parser"
 import { ASTPosition } from "@alanrynne/ifc-syntax-ast-parser/out/ast/core/ASTPosition"
-import {
-  DocumentNode,
-  SectionNode
-} from "@alanrynne/ifc-syntax-ast-parser/out/ast/nodes"
 import IfcSchemas from "../schemas"
+import {
+  getFileSchemaVersion,
+  findEntityInSchema,
+  entityDataToText
+} from "./IfcUtilities"
 
 export const processHoverData = async (params: TextDocumentPositionParams) => {
   const doc = documents.get(params.textDocument.uri)
@@ -35,52 +36,14 @@ export const processHoverData = async (params: TextDocumentPositionParams) => {
       let schema = IfcSchemas[version]
       let text = doc.getText(lineRange)
       let entity = findEntityInSchema(schema, text)
+      //   entity.properties = getInheritedProps(schema, entity)
       if (entity) {
         let hover: Hover = {
-          contents: entityDataToText(entity),
+          contents: entityDataToText(entity, version, schema),
           range: lineRange
         }
         return hover
       }
     }
   })
-}
-
-function findEntityInSchema(schema, name: string) {
-  return (
-    caseInsensitiveKeyValue(schema.types, name) ||
-    caseInsensitiveKeyValue(schema.entities, name) ||
-    caseInsensitiveKeyValue(schema.functions, name) ||
-    caseInsensitiveKeyValue(schema.rules, name) ||
-    null
-  )
-}
-
-function entityDataToText(entity: any) {
-  return [
-    `**${entity.name}**: EXPRESS ${entity.ifcType.toUpperCase()}`,
-    Object.entries(entity.properties)
-      .map(
-        ([key, value]: [string, any]) => `- _${key}_: [${value.type}](link://)`
-      )
-      .join("\n")
-  ]
-}
-
-function caseInsensitiveKeyValue(object: any, key: string) {
-  const existingKey = Object.keys(object).find(
-    schemaKey => schemaKey.toLowerCase() === key.toLowerCase()
-  )
-  if (existingKey) {
-    return object[existingKey]
-  }
-}
-
-function getFileSchemaVersion(doc: any) {
-  let schemaObj = ((doc as DocumentNode)
-    .sections[0] as SectionNode).children.find(
-    item => (item as any).name === "FILE_SCHEMA"
-  )
-  let schema = (schemaObj as any).args[0].items[0].text
-  return schema
 }

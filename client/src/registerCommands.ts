@@ -1,5 +1,6 @@
 import * as vscode from "vscode"
 import { parseQueryString } from "./extension"
+
 let documentationPanel: vscode.WebviewPanel | undefined = undefined
 let viewerPanel: vscode.WebviewPanel | undefined = undefined
 
@@ -41,9 +42,11 @@ function registerDocumentationViewerCommand(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(command, commandHandler)
   )
 }
+
 function register3DViewerCommand(context: vscode.ExtensionContext) {
   const viewerCommand = "ifcSyntax.threeDimensionalViewer"
   const viewerCommandHandler = () => {
+    const uri = vscode.window.activeTextEditor.document.uri.fsPath
     if (viewerPanel) {
       viewerPanel.reveal()
     } else {
@@ -60,7 +63,7 @@ function register3DViewerCommand(context: vscode.ExtensionContext) {
     )
 
     viewerPanel.title = "IFC — 3D"
-    viewerPanel.webview.html = get3DViewerWebviewContent()
+    viewerPanel.webview.html = get3DViewerWebviewContent(uri)
   }
   context.subscriptions.push(
     vscode.commands.registerCommand(viewerCommand, viewerCommandHandler)
@@ -68,7 +71,7 @@ function register3DViewerCommand(context: vscode.ExtensionContext) {
 }
 
 function getDocsWebviewContent(path, query, entity) {
-  return `<!DOCTYPE html>
+  return /*html*/ `<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
@@ -84,17 +87,18 @@ function getDocsWebviewContent(path, query, entity) {
     </html>`
 }
 
-function get3DViewerWebviewContent() {
-  return `<!DOCTYPE html>
+function get3DViewerWebviewContent(uri: string) {
+  return /*html*/ `<!DOCTYPE html>
     <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>IFC Syntax 3D window</title>
-    </head>
-    <body>
+      </head>
+      <body>
         <h1>IFC Syntax 3D Viewer</h1>
+        <p>${uri}</p>
         <p>In progress... Viewer will go here</p>
-    </body>
+      </body>
     </html>`
 }

@@ -21,7 +21,9 @@ function propsToText(
   if (!props) {
     return []
   }
-  const inheritNotice = inheritMessage ? ` (from _${parentName}_)` : ""
+  const inheritNotice = inheritMessage
+    ? ` (from [_${parentName}_](vscode://AlanRynne.ifc-syntax/docs?name=${parentName}&version=${ifcVersion}))`
+    : ""
   return Object.entries(props).map(([key, value]: [string, any]) => {
     const text =
       typeof value.type === "string"
@@ -40,7 +42,7 @@ function getInheritedPropText(schema, entity, name: string = null) {
     name !== null,
     schema.schema
   ).join("\n")
-  if (entity.supertype === null) {
+  if (!entity.supertype || entity.supertype === null) {
     return props
   }
   let parent = findEntityInSchema(schema, entity.supertype)

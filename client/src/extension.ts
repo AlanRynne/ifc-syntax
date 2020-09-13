@@ -7,6 +7,8 @@ import {
   ServerOptions,
   TransportKind
 } from "vscode-languageclient"
+
+import registerCommands from "./registerCommands"
 import { IfcHeadInfoProvider } from "./ifcHeadTreeProvider"
 
 let client: LanguageClient
@@ -15,7 +17,9 @@ export function activate(context: vscode.ExtensionContext) {
   console.log("IFC-Syntax has been activated.")
 
   const ifcHeaderProvider = new IfcHeadInfoProvider()
+
   vscode.window.registerTreeDataProvider("ifcHeader", ifcHeaderProvider)
+
   vscode.window.registerUriHandler({
     handleUri(uri: vscode.Uri) {
       let query: any = parseQueryString(uri.query)
@@ -24,6 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
       })
     }
   })
+
   registerCommands(context)
 
   // The server is implemented in node
@@ -43,9 +48,6 @@ export function activate(context: vscode.ExtensionContext) {
       transport: TransportKind.ipc,
       options: debugOptions
     }
-  }
-  interface Test {
-    (value: string): vscode.Uri
   }
 
   // Options to control the language client
@@ -70,65 +72,6 @@ export function activate(context: vscode.ExtensionContext) {
   console.log("Client has started")
 }
 
-let documentationPanel: vscode.WebviewPanel | undefined = undefined
-let viewerPanel: vscode.WebviewPanel | undefined = undefined
-
-function registerCommands(context: vscode.ExtensionContext) {
-  const command = "ifcSyntax.openDocsViewer"
-  const commandHandler = (uri: vscode.Uri, value: any) => {
-    if (documentationPanel) {
-      documentationPanel.reveal(undefined, true)
-    } else {
-      documentationPanel = vscode.window.createWebviewPanel(
-        "ifcViewer",
-        uri.path,
-        vscode.ViewColumn.Two
-      )
-    }
-
-    documentationPanel.onDidDispose(
-      () => (documentationPanel = undefined),
-      null,
-      context.subscriptions
-    )
-
-    let queryObj = parseQueryString(uri.query)
-    documentationPanel.title = queryObj.version + " - " + queryObj.name
-    documentationPanel.webview.html = getDocsWebviewContent(
-      uri.path,
-      queryObj,
-      value
-    )
-  }
-  context.subscriptions.push(
-    vscode.commands.registerCommand(command, commandHandler)
-  )
-
-  const viewerCommand = "ifcSyntax.threeDimensionalViewer"
-  const viewerCommandHandler = () => {
-    if (viewerPanel) {
-      viewerPanel.reveal()
-    } else {
-      viewerPanel = vscode.window.createWebviewPanel(
-        "ifcViewer",
-        "IFC 3D",
-        vscode.ViewColumn.Two
-      )
-    }
-    viewerPanel.onDidDispose(
-      () => (documentationPanel = undefined),
-      null,
-      context.subscriptions
-    )
-
-    viewerPanel.title = "IFC — 3D"
-    viewerPanel.webview.html = get3DViewerWebviewContent()
-  }
-  context.subscriptions.push(
-    vscode.commands.registerCommand(viewerCommand, viewerCommandHandler)
-  )
-}
-
 export function deactivate(): Thenable<void> | undefined {
   if (!client) {
     return undefined
@@ -136,37 +79,7 @@ export function deactivate(): Thenable<void> | undefined {
   return client.stop()
 }
 
-function getDocsWebviewContent(path, query, entity) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${query.name}</title>
-</head>
-<body>
-    <h1>IFC Syntax ${query.version} Docs</h1>
-    <h2>${query.name}</h2>
-    <p>${JSON.stringify(entity)}</p>
-</body>
-</html>`
-}
-
-function get3DViewerWebviewContent() {
-  return `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>IFC Syntax 3D window</title>
-  </head>
-  <body>
-      <h1>IFC Syntax 3D Viewer</h1>
-      <p>In progress... Viewer will go here</p>
-  </body>
-  </html>`
-}
-function parseQueryString(query: string): any {
+export function parseQueryString(query: string): any {
   let pairs = query.split("&")
   let queryObj = {}
   pairs.forEach(pair => {

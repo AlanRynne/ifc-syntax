@@ -18,7 +18,8 @@ function registerDocumentationViewerCommand(context: vscode.ExtensionContext) {
       documentationPanel = vscode.window.createWebviewPanel(
         "ifc3dViewer",
         uri.path,
-        vscode.ViewColumn.Two
+        vscode.ViewColumn.Two,
+        { enableScripts: true }
       )
     }
 
@@ -82,7 +83,34 @@ function getDocsWebviewContent(path, query, entity) {
         <h1>IFC Syntax ${query.version} Docs</h1>
         <h2>${query.name}</h2>
         <p>Placeholder for BuildingSmart docs text...</p>
-        <p>${JSON.stringify(entity)}</p>
+        <div id="app">
+        <test :item="message"/>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            Vue.component('test', {
+                template: "<ul><li v-for='(value,key) in item' :key='key'>{{key}} — {{value}}</li></ul>",
+                props:["item"],
+                data() {
+                    return {
+                    }
+                }
+            })
+
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    message: ${JSON.stringify(entity)}
+                },
+                methods: {
+                    msg: () => { return this.data.message }
+                }
+            })
+
+
+        </script>
+
       </body>
     </html>`
 }

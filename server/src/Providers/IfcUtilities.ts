@@ -22,18 +22,21 @@ function propsToText(
     return []
   }
   const inheritNotice = inheritMessage
-    ? ` (from [_${parentName}_](vscode://AlanRynne.ifc-syntax/docs?name=${parentName}&version=${ifcVersion}))`
+    ? ` _(from ${createLink(parentName, ifcVersion)})_`
     : ""
   return Object.entries(props).map(([key, value]: [string, any]) => {
     const text =
       typeof value.type === "string"
-        ? `[**${value.type}**](vscode://AlanRynne.ifc-syntax/docs?name=${value.type}&version=${ifcVersion})`
+        ? createLink(value.type, ifcVersion, true, false)
         : typeToText(value.type, ifcVersion)
-    return `- _${key}_: **${text}**${inheritNotice}`
+    return `_@param_ \`${key}\`: ${text}${inheritNotice}\n`
   })
 }
 function typeToText(type: any, ifcVersion: string) {
-  return `${type.type} of [${type.contains}](vscode://AlanRynne.ifc-syntax/docs?name=${type.contains}&version=${ifcVersion})`
+  if (typeof type === "string") {
+    return createLink(type, ifcVersion, true, false)
+  }
+  return `_${type.type}_ of ${typeToText(type.contains, ifcVersion)}`
 }
 function getInheritedPropText(schema, entity, name: string = null) {
   let props = propsToText(
@@ -58,21 +61,38 @@ function getInheritedProps(schema, entity) {
   return { ...props, ...entity.properties }
 }
 export function entityDataToText(entity: any, version: string, schema: any) {
-  let link =
-    "vscode://AlanRynne.ifc-syntax/docs?name=" +
-    entity.name +
-    "&version=" +
-    schema.schema
-  let header = `**${entity.name}**`
+  let header = createLink(entity.name, schema.schema, true)
   if (entity.supertype) {
-    header += `: [_${entity.supertype}_](${link})`
+    header += `: ${createLink(entity.supertype, schema.schema, false, true)}`
   }
-  const type = `_${version} EXPRESS ${entity.ifcType.toUpperCase()}_`
+  const type = `_${version}_`
+  const description = "Placeholder for entity description..."
 
   const props = getInheritedPropText(schema, entity)
 
-  return [header, type, props]
+  return [header + " — " + type, description, props]
 }
+function createLink(
+  entityName: any,
+  schemaName: any,
+  bold?: boolean,
+  italic?: boolean
+) {
+  let mod = ""
+  if (italic) {
+    mod += "_"
+  }
+  if (bold) {
+    mod += "**"
+  }
+  let url =
+    "vscode://AlanRynne.ifc-syntax/docs?name=" +
+    entityName +
+    "&version=" +
+    schemaName
+  return `[${mod}${entityName}${mod.split("").reverse().join("")}](${url})`
+}
+
 function caseInsensitiveKeyValue(object: any, key: string) {
   const existingKey = Object.keys(object).find(
     schemaKey => schemaKey.toLowerCase() === key.toLowerCase()

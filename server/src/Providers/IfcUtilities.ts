@@ -32,12 +32,55 @@ function propsToText(
     return `_@param_ \`${key}\`: ${text}${inheritNotice}\n`
   })
 }
+
+function inversePropsToText(
+  props: any,
+  parentName: string,
+  inheritMessage: boolean = false,
+  ifcVersion: string
+): string[] {
+  if (!props) {
+    return []
+  }
+  const inheritNotice = inheritMessage
+    ? ` _(from ${createLink(parentName, ifcVersion)})_`
+    : ""
+  return Object.entries(props).map(([key, value]: [string, any]) => {
+    const text =
+      typeof value.type === "string"
+        ? createLink(value.type, ifcVersion, true, false)
+        : typeToText(value.type, ifcVersion)
+    return `_@inverse_ \`${key}\`: ${text}${inheritNotice} for ${value.for}\n`
+  })
+}
+
+function derivedPropsToText(
+  props: any,
+  parentName: string,
+  inheritMessage: boolean = false,
+  ifcVersion: string
+): string[] {
+  if (!props) {
+    return []
+  }
+  const inheritNotice = inheritMessage
+    ? ` _(from ${createLink(parentName, ifcVersion)})_`
+    : ""
+  return Object.entries(props).map(([key, value]: [string, any]) => {
+    const text =
+      typeof value.type === "string"
+        ? createLink(value.type, ifcVersion, true, false)
+        : typeToText(value.type, ifcVersion)
+    return `_@derived_ \`${key}\`: ${text}${inheritNotice}\n`
+  })
+}
 function typeToText(type: any, ifcVersion: string) {
   if (typeof type === "string") {
     return createLink(type, ifcVersion, true, false)
   }
   return `_${type.type}_ of ${typeToText(type.contains, ifcVersion)}`
 }
+
 function getInheritedPropText(schema, entity, name: string = null) {
   let props = propsToText(
     entity.properties,
@@ -52,6 +95,37 @@ function getInheritedPropText(schema, entity, name: string = null) {
   let parentProps = getInheritedPropText(schema, parent, name || entity.name)
   return [parentProps, props].join("\n")
 }
+
+function getInheritedInverseText(schema, entity, name: string = null) {
+  let props = inversePropsToText(
+    entity.inverse,
+    entity.name,
+    name !== null,
+    schema.schema
+  ).join("\n")
+  if (!entity.supertype || entity.supertype === null) {
+    return props
+  }
+  let parent = findEntityInSchema(schema, entity.supertype)
+  let parentProps = getInheritedInverseText(schema, parent, name || entity.name)
+  return [parentProps, props].join("\n")
+}
+
+function getInheritedDerivedText(schema, entity, name: string = null) {
+  let props = derivedPropsToText(
+    entity.derived,
+    entity.name,
+    name !== null,
+    schema.schema
+  ).join("\n")
+  if (!entity.supertype || entity.supertype === null) {
+    return props
+  }
+  let parent = findEntityInSchema(schema, entity.supertype)
+  let parentProps = getInheritedDerivedText(schema, parent, name || entity.name)
+  return [parentProps, props].join("\n")
+}
+
 function getInheritedProps(schema, entity) {
   if (entity.supertype === null) {
     return entity.properties
@@ -60,6 +134,7 @@ function getInheritedProps(schema, entity) {
   let props = getInheritedProps(schema, parent)
   return { ...props, ...entity.properties }
 }
+
 export function entityDataToText(entity: any, version: string, schema: any) {
   let header = createLink(entity.name, schema.schema, true)
   if (entity.supertype) {
@@ -69,9 +144,18 @@ export function entityDataToText(entity: any, version: string, schema: any) {
   const description = "Placeholder for entity description..."
 
   const props = getInheritedPropText(schema, entity)
-
-  return [header + " — " + type, description, props]
+  const inverse = getInheritedInverseText(schema, entity)
+  //const derived = getInheritedDerivedText(schema, entity)
+  const subtypes =
+    entity.subtypes === null
+      ? "**Subtypes:** _None_"
+      : "**Subtypes:**\n" +
+        entity.subtypes
+          .map(type => "- " + createLink(type, schema.schema))
+          .join("\n")
+  return [header + " — " + type, description, props, inverse, subtypes]
 }
+
 function createLink(
   entityName: any,
   schemaName: any,

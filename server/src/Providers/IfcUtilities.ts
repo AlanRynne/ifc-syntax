@@ -14,6 +14,7 @@ export function findEntityInSchema(schema, name: string) {
 }
 function propsToText(
   props: any,
+  propDocs: any,
   parentName: string,
   inheritMessage: boolean = false,
   ifcVersion: string
@@ -29,7 +30,10 @@ function propsToText(
       typeof value.type === "string"
         ? createLink(value.type, ifcVersion, true, false)
         : typeToText(value.type, ifcVersion)
-    return `_@param_ \`${key}\`: ${text}${inheritNotice}\n`
+    const doc = propDocs ? caseInsensitiveKeyValue(propDocs, key) : undefined
+    return `_@param_ \`${key}\`: ${text}${inheritNotice} -> ${
+      doc || "No description."
+    }\n`
   })
 }
 
@@ -82,8 +86,10 @@ function typeToText(type: any, ifcVersion: string) {
 }
 
 function getInheritedPropText(schema, entity, name: string = null) {
+  var docs = caseInsensitiveKeyValue(ifcDocs.entities, entity.name)
   let props = propsToText(
     entity.properties,
+    docs?.attributes,
     entity.name,
     name !== null,
     schema.schema
@@ -135,25 +141,31 @@ function getInheritedProps(schema, entity) {
   return { ...props, ...entity.properties }
 }
 
+import ifcDocs from "../schemaDocs/ifc4x1docs.json"
+
 export function entityDataToText(entity: any, version: string, schema: any) {
   let header = createLink(entity.name, schema.schema, true)
+  let docs = caseInsensitiveKeyValue(ifcDocs.entities, entity.name)
   if (entity.supertype) {
     header += `: ${createLink(entity.supertype, schema.schema, false, true)}`
   }
   const type = `_${version}_`
-  const description = "Placeholder for entity description..."
-
-  const props = getInheritedPropText(schema, entity)
-  const inverse = getInheritedInverseText(schema, entity)
+  const description = docs.description.join("\n\n") || "No description found."
+  let props = [],
+    inverse = [],
+    subtypes = ""
+  if (entity.properties) props = getInheritedPropText(schema, entity)
+  if (entity.inverse) inverse = getInheritedInverseText(schema, entity)
   //const derived = getInheritedDerivedText(schema, entity)
-  const subtypes =
-    entity.subtypes === null
-      ? "**Subtypes:** _None_"
-      : "**Subtypes:**\n" +
-        entity.subtypes
-          .map(type => "- " + createLink(type, schema.schema))
-          .join("\n")
-  return [header + " — " + type, description, props, inverse, subtypes]
+  if (entity.subtypes)
+    subtypes =
+      entity.subtypes === null
+        ? "**Subtypes:** _None_"
+        : "**Subtypes:**\n" +
+          entity.subtypes
+            .map(type => "- " + createLink(type, schema.schema))
+            .join("\n")
+  return [header + " — " + type, description, props, subtypes]
 }
 
 function createLink(

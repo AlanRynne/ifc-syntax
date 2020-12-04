@@ -8,7 +8,8 @@ import {
   TextDocuments,
   ProposedFeatures,
   InitializeParams,
-  DidChangeConfigurationNotification
+  DidChangeConfigurationNotification,
+  MessageActionItem
 } from "vscode-languageserver"
 
 import { IfcSyntaxSettings, DefaultSettings } from "./settings"
@@ -45,6 +46,7 @@ export let documentSettings: Map<
 
 // Go to definition provider
 connection.onDefinition(processGoToDefinition)
+
 // Document symbols handler
 connection.onDocumentSymbol(processDocumentSymbols)
 // Hover information handler
@@ -89,6 +91,7 @@ connection.onInitialize((params: InitializeParams) => {
     }
   }
 })
+
 connection.onInitialized(() => {
   if (hasConfigurationCapability) {
     // Register for all configuration changes.
@@ -104,8 +107,8 @@ connection.onInitialized(() => {
   }
   connection.onRequest("ifc-syntax.docs", payload => {
     return findEntityInSchema(IfcSchemas[payload.version], payload.name)
-  })
 })
+
 // Configuration change handler
 connection.onDidChangeConfiguration(change => {
   if (hasConfigurationCapability) {

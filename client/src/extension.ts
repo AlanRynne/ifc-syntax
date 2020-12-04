@@ -11,19 +11,26 @@ import {
 import registerCommands from "./registerCommands"
 import { IfcHeadInfoProvider } from "./ifcHeadTreeProvider"
 
-let client: LanguageClient
+let extensionConfig: vscode.WorkspaceConfiguration = null
+let languageClient: LanguageClient = null
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("IFC-Syntax has been activated.")
 
-  const ifcHeaderProvider = new IfcHeadInfoProvider()
+  extensionConfig = vscode.workspace.getConfiguration("ifcSyntax")
 
-  vscode.window.registerTreeDataProvider("ifcHeader", ifcHeaderProvider)
+  vscode.workspace.onDidChangeConfiguration(e => {
+    if (e.affectsConfiguration("ifcSyntax.server.enabled")) {
+      handleServerEnableChanged(context)
+    }
+  })
+
+  vscode.window.registerTreeDataProvider("ifcHeader", new IfcHeadInfoProvider())
 
   vscode.window.registerUriHandler({
     handleUri(uri: vscode.Uri) {
       let query: any = parseQueryString(uri.query)
-      client.sendRequest("ifc-syntax.docs", query).then(value => {
+      languageClient.sendRequest("ifc-syntax.docs", query).then(value => {
         vscode.commands.executeCommand("ifcSyntax.openDocsViewer", uri, value)
       })
     }
@@ -31,6 +38,36 @@ export function activate(context: vscode.ExtensionContext) {
 
   registerCommands(context)
 
+  languageClient = setupServer(context)
+  var serverEnabled = extensionConfig.get("server.enabled")
+  if (serverEnabled) {
+    // Start the client. This will also launch the server
+    languageClient.start()
+    console.log("Client has started")
+  }
+}
+
+function handleServerEnableChanged(context: vscode.ExtensionContext) {
+  extensionConfig = vscode.workspace.getConfiguration("ifcSyntax")
+  var serverEnabled = extensionConfig.get("server.enabled")
+  if (serverEnabled) {
+    console.log("Starting server")
+    if (languageClient === null) {
+      languageClient = setupServer(context)
+    }
+    languageClient.start()
+  } else {
+    console.log("Stopping server")
+    languageClient.stop()
+    languageClient = null
+  }
+}
+
+export function deactivate(): Thenable<void> {
+  return languageClient?.stop().then(() => (languageClient = null))
+}
+
+function setupServer(context: vscode.ExtensionContext): LanguageClient {
   // The server is implemented in node
   let serverModule = context.asAbsolutePath(
     path.join("server", "out", "server.js")
@@ -61,22 +98,13 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   // Create the language client and start the client.
-  client = new LanguageClient(
+  var client = new LanguageClient(
     "ifcServer",
     "IFC Syntax Server",
     serverOptions,
     clientOptions
   )
-  // Start the client. This will also launch the server
-  client.start()
-  console.log("Client has started")
-}
-
-export function deactivate(): Thenable<void> | undefined {
-  if (!client) {
-    return undefined
-  }
-  return client.stop()
+  return client
 }
 
 export function parseQueryString(query: string): any {

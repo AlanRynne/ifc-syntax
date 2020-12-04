@@ -1,5 +1,5 @@
 import { TextDocumentPositionParams, Hover } from "vscode-languageserver"
-import { documents, IfcDocManager, connection } from "../server"
+import { documents, IfcDocManager } from "../server"
 import { PositionVisitor } from "@alanrynne/ifc-syntax-ast-parser"
 import { ASTPosition } from "@alanrynne/ifc-syntax-ast-parser/out/ast/core/ASTPosition"
 import IfcSchemas from "../schemas"
@@ -8,6 +8,7 @@ import {
   findEntityInSchema,
   entityDataToText
 } from "./IfcUtilities"
+import { ASTRange } from "@alanrynne/ifc-syntax-ast-parser/out/ast"
 
 export const processHoverData = async (params: TextDocumentPositionParams) => {
   const doc = documents.get(params.textDocument.uri)
@@ -19,16 +20,7 @@ export const processHoverData = async (params: TextDocumentPositionParams) => {
       return null
     }
 
-    let lineRange = {
-      start: {
-        line: pv.loc.start.line - 1,
-        character: pv.loc.start.character
-      },
-      end: {
-        line: pv.loc.end.line - 1,
-        character: pv.loc.end.character
-      }
-    }
+    let lineRange = adjustRange(pv.loc)
     // Check only if it is a string node
     // TODO: This must be better specified, clearer code...
     if (pv.type === 12) {
@@ -46,4 +38,17 @@ export const processHoverData = async (params: TextDocumentPositionParams) => {
       }
     }
   })
+}
+
+function adjustRange(loc: ASTRange) {
+  return {
+    start: {
+      line: loc.start.line - 1,
+      character: loc.start.character
+    },
+    end: {
+      line: loc.end.line - 1,
+      character: loc.end.character
+    }
+  }
 }

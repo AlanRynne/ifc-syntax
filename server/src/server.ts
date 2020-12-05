@@ -107,6 +107,7 @@ connection.onInitialized(() => {
   }
   connection.onRequest("ifc-syntax.docs", payload => {
     return findEntityInSchema(IfcSchemas[payload.version], payload.name)
+  })
 })
 
 // Configuration change handler

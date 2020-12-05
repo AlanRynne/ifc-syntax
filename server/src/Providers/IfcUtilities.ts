@@ -82,7 +82,10 @@ function typeToText(type: any, ifcVersion: string) {
   if (typeof type === "string") {
     return createLink(type, ifcVersion, true, false)
   }
-  return `_${type.type}_ of ${typeToText(type.contains, ifcVersion)}`
+  return `_${type.type}_ of ${typeToText(
+    type.contains ?? type.type,
+    ifcVersion
+  )}`
 }
 
 function getInheritedPropText(schema, entity, name: string = null) {

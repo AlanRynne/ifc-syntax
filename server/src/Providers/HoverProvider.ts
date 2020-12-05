@@ -37,6 +37,7 @@ export const processHoverData = async (params: TextDocumentPositionParams) => {
         return hover
       }
     }
+    return null
   })
 }
 

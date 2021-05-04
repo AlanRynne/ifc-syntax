@@ -4,7 +4,7 @@
 
 ## Description
 
-***IFC Syntax*** is a Visual Studio Code extension that adds language support for Industry Foundation Classes (also known as IFC) files, using the `.ifc` extension, and for EXPRESS languate, using the `.exp` extension.
+***IFC Syntax*** is a Visual Studio Code extension that adds language support for Industry Foundation Classes (also known as IFC) files, using the `.ifc` extension, and for EXPRESS language, using the `.exp` extension.
 
 ## Features
 

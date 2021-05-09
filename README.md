@@ -1,6 +1,17 @@
 # IFC Syntax VSCode Extension
 
-> This extension is in early stages of development. If you see a bug you want to report, please open an issue on GitHub.
+> :warning: This repo has been deprecated in favour of the new monorepo I created with all my IFC related code. You can check it out at:
+> 
+> [IFC Developer Tools](https://github.com/AlanRynne/ifc-developer-tools)
+> 
+> It includes:
+> - `ifc` and `express` parsers
+> - The IFC Syntax VSCode Extension code
+> - The IFC Language Server
+> - An IFC to Typescript code generator
+> - An IFC documentation extraction tool
+> 
+> See you there!!
 
 ## Description
 
